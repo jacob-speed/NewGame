@@ -4,7 +4,10 @@
 
 This is a Pygame game where the player controls a rectangle and has to avoid bouncing balls that randomly spawn on the screen. If there is a collision between the player and the ball, the player will lose hitpoints based on the speed and size of the ball. If the player's hitpoints reach 0, the game restarts. The goal is to last as long as possible and score points based on the time the player lasts.
 
-The game has a global speed modifier which increases the speed of the balls as the game progresses. There are also different colored balls that, if collided with, provide upgrades to the player such as increased hitpoints, increased speed, or a larger rectangle.
+The game has a global speed modifier which increases the speed of the balls as the game progresses. There are also different colored balls that, if collided with, provide upgrades to the player such as:
+- Blue ball provides increased hitpoints and size, 
+- Green ball provides increased speed
+- Red ball increaces the size of the world to allow more space for dodging balls.
 
 ## Files
 
