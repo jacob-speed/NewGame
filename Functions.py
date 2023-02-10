@@ -30,19 +30,17 @@ def ball_collision(ball, char):
 
 # Scale Screen
 
-def screen_shrink(char, balls, scaler, SCALE):
-    scaler *= SCALE
-    char.x *= SCALE
-    char.y *= SCALE
-    char.height *= SCALE
-    char.width *= SCALE
-    char.speed *= SCALE
+def screen_shrink(char, balls, scaler, amount):
+    scaler *= amount
+    char.height *= amount
+    char.width *= amount
+    char.speed *= amount
     for ball in balls:
-        ball.radius *= SCALE
-        ball.x *= SCALE
-        ball.y *= SCALE
-        ball.speed_x *= SCALE
-        ball.speed_y *= SCALE
+        ball.radius *= amount
+        ball.speed_x *= amount
+        ball.speed_y *= amount
+    
+    return scaler
 
 # highscore
 def highscore():

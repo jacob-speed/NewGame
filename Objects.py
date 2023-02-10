@@ -28,31 +28,27 @@ class Character(object):
 # Ball object
 class Ball(object):
     def __init__(self, WINDOW_WIDTH, WINDOW_HEIGHT, scaler):
-        self.scaler = scaler
-        self.WINDOW_WIDTH = WINDOW_WIDTH
-        self.WINDOW_HEIGHT = WINDOW_HEIGHT
-        self.exists = True
-        self.type = random.randint(1,30)
+        self.radius = min(scaler * abs(random.normalvariate(40, 15)) + 5, 65)
+        self.speed = scaler * random.normalvariate(math.log(100 - self.radius) * 2.5, 2.5)
+        self.speed_x = self.speed * (random.normalvariate(0.5, 0.2)) * random.choice([-1, 1])
+        self.speed_y = math.sqrt(abs(self.speed**2 - self.speed_x**2)) * random.choice([-1, 1])
+        self.hp = random.normalvariate(self. radius + self.speed, self.speed)
+        self.type = random.randint(1,20)
         if self.type > 3:
             self.type = 4
         if self.type == 4:
-            self.radius = self.scaler * (random.random()* 5 + 3) ** 2
-            self.x = (65 + (self.WINDOW_WIDTH - 130) * random.randint(0,1))
-            self.y = (65 + (self.WINDOW_HEIGHT - 130) * random.randint(0,1))
+            self.x = (65 + (WINDOW_WIDTH - 130) * random.randint(0,1))
+            self.y = (65 + (WINDOW_HEIGHT - 130) * random.randint(0,1))
             self.colour = (255, 255, 255)
         else:
-            self.radius = self.scaler * 20
-            self.x = (65 + (self.WINDOW_WIDTH - 130) * random.random())
-            self.y = (65 + (self.WINDOW_HEIGHT - 130) * random.random())
+            self.x = (65 + (WINDOW_WIDTH - 130) * random.random())
+            self.y = (65 + (WINDOW_HEIGHT - 130) * random.random())
             if self.type == 1:
                 self.colour = (255, 0, 0)
             if self.type == 2:
                 self.colour = (0, 255, 0)
             if self.type == 3:
                 self.colour = (0, 0, 255)
-        self.speed_x = self.scaler * (random.random() * 3 + 1) ** 2
-        self.speed_y = self.scaler * (random.random() * 3 + 1) ** 2
-        self.hp = math.sqrt(self.speed_x * self.speed_y * self.radius) 
 
     def draw(self, win):
         pygame.draw.circle(win, self.colour, (self.x, self.y), self.radius)
