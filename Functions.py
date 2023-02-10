@@ -1,7 +1,21 @@
 ## collection of functions used for newgame
 import math
+import pygame
 import csv
 from datetime import datetime
+
+
+# Set Start Parameters
+def set_start_parameters(Character, WINDOW_WIDTH, WINDOW_HEIGHT):
+    frames_counter = 0
+    timer = 0
+    global_speed = 1.0
+    scaler = 1
+    print_score_counter = 0
+    balls = []
+    char = Character(x = WINDOW_WIDTH/2, y = WINDOW_HEIGHT/2, colour = (100, 100, 255), speed = 3, hp = 20)
+    highscore = get_high_score()
+    return frames_counter, timer, global_speed, scaler, print_score_counter, balls, char, highscore
 
 
 # Ball collsion
@@ -28,9 +42,9 @@ def ball_collision(ball, char):
     
     return collision
 
-# Scale Screen
 
-def screen_shrink(char, balls, scaler, amount):
+# Scale Screen
+def scale_screen(char, balls, scaler, amount):
     scaler *= amount
     char.height *= amount
     char.width *= amount
@@ -42,37 +56,13 @@ def screen_shrink(char, balls, scaler, amount):
     
     return scaler
 
-# highscore
-def highscore():
+
+# Get High Score
+def get_high_score():
     with open("scores.csv", "r") as file:
         reader = csv.reader(file)
-        scores = [tuple(row) for row in reader]
-    scores1 = [x[0] for x in scores]
-    highscore = 0
-    for score in scores1:
-        if float(score) > highscore:
-            highscore = float(score)
-    return(highscore)
-
-
-
-def set_start_parameters(Character, WINDOW_WIDTH, WINDOW_HEIGHT):
-    global frames_counter
-    global timer
-    global global_speed
-    global scaler
-    global print_score_counter
-    global balls
-    global char
-    frames_counter = 0
-    timer = 0
-    global_speed = 1.0
-    scaler = 1
-    print_score_counter = 0
-    balls = []
-    char = Character(x = WINDOW_WIDTH/2, y = WINDOW_HEIGHT/2, colour = (100, 100, 255), speed = 3, hp = 20)
-
-    return frames_counter, timer, global_speed, scaler, print_score_counter, balls, char
+        scores = [float(row[0]) for row in reader]
+    return max(scores)
 
 
 # Update highscore
@@ -84,3 +74,15 @@ def update_scores(preivous_time):
     with open("scores.csv", "w", newline="") as file:
         writer = csv.writer(file)
         writer.writerows(scores)   
+
+
+# blit main menu
+def blit_main_menu(window, WINDOW_WIDTH, WINDOW_HEIGHT, FPS):
+    pygame.font.init()
+    font = pygame.font.SysFont('comicsans', 50)
+    label1 = font.render(f'Ball Game', True, (255, 255, 255))
+    label2 = font.render(f'Press Enter to play', True, (255, 255, 255))
+    window.blit(label1, ((WINDOW_WIDTH - label1.get_width()) / 2, ((WINDOW_HEIGHT - label1.get_height()) / 2)))
+    window.blit(label2, ((WINDOW_WIDTH - label2.get_width()) / 2, ((WINDOW_HEIGHT + label2.get_height()) / 2)))
+    pygame.display.update()
+    pygame.time.delay(1000 // FPS)

@@ -1,5 +1,5 @@
 import pygame
-from Functions import ball_collision, highscore, screen_shrink, set_start_parameters, update_scores
+from Functions import ball_collision, scale_screen, set_start_parameters, update_scores, blit_main_menu
 from Objects import Ball, Character
 import math
 
@@ -9,7 +9,7 @@ WINDOW_HEIGHT = 800
 FPS = 24
 SCALE = 0.8 
 main_menu = True
-frames_counter, timer, global_speed, scaler, print_score_counter, balls, char = set_start_parameters(Character, WINDOW_WIDTH, WINDOW_HEIGHT)
+frames_counter, timer, global_speed, scaler, print_score_counter, balls, char, highscore = set_start_parameters(Character, WINDOW_WIDTH, WINDOW_HEIGHT)
 
 
 # Create window
@@ -21,48 +21,29 @@ pygame.display.set_caption("Pygame Ball Game")
 running = True
 while running:
 
-    # Clear screen
-    window.fill((0, 0, 0))
-    keys = pygame.key.get_pressed()
-
     # Quit game
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    # Return to main menu
+    # Clear screen
+    window.fill((0, 0, 0))
+    keys = pygame.key.get_pressed()
+
+    # Main menu
     if keys[pygame.K_ESCAPE]:
         main_menu = True    
-        frames_counter, timer, global_speed, scaler, print_score_counter, balls, char = set_start_parameters(Character, WINDOW_WIDTH, WINDOW_HEIGHT)
-
+        frames_counter, timer, global_speed, scaler, print_score_counter, balls, char, highscore = set_start_parameters(Character, WINDOW_WIDTH, WINDOW_HEIGHT)
 
     if main_menu:
         if keys[pygame.K_RETURN]:
             main_menu = False
+        blit_main_menu(window, WINDOW_WIDTH, WINDOW_HEIGHT, FPS)
+        continue
         
-        pygame.font.init()
-        font = pygame.font.SysFont('comicsans', 50)
-        label = font.render(f'Ball Game', True, (255, 255, 255))
-        window.blit(label, ((WINDOW_WIDTH - label.get_width()) / 2, ((WINDOW_HEIGHT - label.get_height()) / 2)))
-        label = font.render(f'Press Enter to play', True, (255, 255, 255))
-        window.blit(label, ((WINDOW_WIDTH - label.get_width()) / 2, ((WINDOW_HEIGHT + label.get_height()) / 2)))
-
-        # Update display
-        pygame.display.update()
-        pygame.time.delay(1000 // FPS)
-        continue 
-
-
 
     # Move Character
-    if keys[pygame.K_LEFT]:
-        char.x -= char.speed
-    if keys[pygame.K_RIGHT]:
-        char.x += char.speed
-    if keys[pygame.K_DOWN]:
-        char.y += char.speed
-    if keys[pygame.K_UP]:
-        char.y -= char.speed
+    char.move()
     
     # Add Balls
     if (frames_counter % 100) == 0:
@@ -93,13 +74,13 @@ while running:
     # Check for ball collisions with character
         if ball_collision(ball, char):
             if ball.type == 1:
-                scaler = screen_shrink(char = char, balls = balls, scaler = scaler, amount = 1.1/math.log10(ball.hp))
+                scaler = scale_screen(char = char, balls = balls, scaler = scaler, amount = 1.1/math.log10(ball.hp))
             if ball.type == 2:
                 char.speed *= math.log(ball.speed)
             if ball.type == 3:
                 char.hp *= (ball.hp / 100)
             if ball.type == 4:
-                screen_shrink(char = char, balls = balls, scaler = scaler, amount = math.log10(ball.hp))
+                scale_screen(char = char, balls = balls, scaler = scaler, amount = math.log10(ball.hp))
                 char.hp += ball.hp
             char.width = (20 + char.hp)
             char.height = 1.3 * char.width
@@ -114,9 +95,9 @@ while running:
     # upon death
     if char.x < 0 or char.x + char.width > WINDOW_WIDTH or char.y + char.height > WINDOW_HEIGHT or char.y < 0:
         preivous_time = timer
-        frames_counter, timer, global_speed, scaler, print_score_counter, balls, char = set_start_parameters(Character, WINDOW_WIDTH, WINDOW_HEIGHT)
         print_score_counter = 100
         update_scores(preivous_time)
+        frames_counter, timer, global_speed, scaler, print_score_counter, balls, char, highscore = set_start_parameters(Character, WINDOW_WIDTH, WINDOW_HEIGHT)
 
 
 
@@ -145,7 +126,7 @@ while running:
     window.blit(label, (WINDOW_WIDTH - 150, (label.get_height() / 2)))
 
     # high score
-    label = font.render(f'High Score {highscore()}', True, (255, 255, 255))
+    label = font.render(f'High Score {highscore}', True, (255, 255, 255))
     window.blit(label, (50, (label.get_height() / 2)))
 
     # previous time
